@@ -1,0 +1,54 @@
+*.iml
+.gradle
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+
+# Built objects
+bin/
+gen/
+out/
+.gradle/
+build/
+
+# Android Studio / IntelliJ files
+.idea/modules.xml
+.idea/jarRepositories.xml
+.idea/compiler.xml
+.idea/libraries/
+.idea/assetWizardSettings.xml
+*.iml
+*.ipr
+*.iws
+
+# Keystore files (NEVER check these in!)
+*.jks
+*.keystore
+*.pk8
+*.p12
+
+# Local configuration files
+local.properties
+.DS_Store
+
+# Log files
+*.log
+
+# Captures and Profiling
+captures/
+
+# Google Services (if you want to keep your API keys private)
+# google-services.json
+
+# Navigation Editor temp files
+.navigation/
