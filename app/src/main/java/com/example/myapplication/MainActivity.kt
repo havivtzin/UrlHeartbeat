@@ -4,10 +4,12 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,8 +27,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.myapplication.ui.theme.MyApplicationTheme
 import java.text.SimpleDateFormat
@@ -113,6 +118,19 @@ fun MonitorScreen(modifier: Modifier = Modifier) {
                 Text("Downtime: ${hours}h ${minutes % 60}m ${seconds % 60}s")
             }
         }
+
+        Text(
+            text = "Manual Check",
+            modifier = Modifier
+                .clickable {
+                    val intent = Intent(Intent.ACTION_VIEW)
+                    intent.data = Uri.parse("https://isr.freeddns.org/")
+                    context.startActivity(intent)
+                }
+                .padding(top = 16.dp),
+            textDecoration = TextDecoration.Underline,
+            color = Color.Blue
+        )
     }
 }
 
