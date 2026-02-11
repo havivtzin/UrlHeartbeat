@@ -130,10 +130,16 @@ class MonitorService : Service() {
             notificationManager?.createNotificationChannel(channel)
         }
 
+        val notificationIntent = Intent(this, MainActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(
+            this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE
+        )
+
         return NotificationCompat.Builder(this, channelId)
             .setContentTitle("URL Monitor Running")
             .setContentText("Checking URL every minute")
             .setSmallIcon(android.R.drawable.ic_dialog_alert)
+            .setContentIntent(pendingIntent)
             .build()
     }
 }

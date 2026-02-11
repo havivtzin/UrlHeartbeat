@@ -1,14 +1,19 @@
 package com.example.myapplication
 
+import android.Manifest
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -32,6 +37,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.myapplication.ui.theme.MyApplicationTheme
 import java.text.SimpleDateFormat
@@ -60,10 +66,41 @@ fun MonitorScreen(modifier: Modifier = Modifier) {
     var isUp by remember { mutableStateOf(true) }
     var downTime by remember { mutableStateOf<Date?>(null) }
 
-    LaunchedEffect(Unit) {
-        if (isChecked) {
+    val notificationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { isGranted ->
+            if (isGranted) {
+                val intent = Intent(context, MonitorService::class.java)
+                context.startService(intent)
+            } else {
+                // Optionally, handle the case where the user denies the permission
+            }
+        }
+    )
+
+    fun startMonitorService() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            when {
+                ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED -> {
+                    val intent = Intent(context, MonitorService::class.java)
+                    context.startService(intent)
+                }
+                else -> {
+                    notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                }
+            }
+        } else {
             val intent = Intent(context, MonitorService::class.java)
             context.startService(intent)
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        if (isChecked) {
+            startMonitorService()
         }
     }
 
@@ -94,8 +131,7 @@ fun MonitorScreen(modifier: Modifier = Modifier) {
                 onCheckedChange = {
                     isChecked = it
                     if (isChecked) {
-                        val intent = Intent(context, MonitorService::class.java)
-                        context.startService(intent)
+                        startMonitorService()
                     } else {
                         val intent = Intent(context, MonitorService::class.java)
                         context.stopService(intent)
